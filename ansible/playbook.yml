@@ -21,7 +21,7 @@
         [ -f "$FILE" ] || break
         pip install virtualenv;
         ENV=$(echo $FILE | cut -d '.' -f 1)
-        virtualenv $ENV
+        virtualenv /opt/python_venvs/$ENV
         source $ENV/bin/activate
         pip install -r $FILE
         done
