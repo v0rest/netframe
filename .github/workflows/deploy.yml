@@ -22,4 +22,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml -v
+          ansible-playbook localhost ansible/playbook.yml -v
