@@ -22,7 +22,7 @@
 
     - name: Create venvs
       shell: |
-        cd requirements;
+        cd $GITHUB_WORKSPACE/requirements;
         for FILE in *.txt; do
         [ -f "$FILE" ] || break
         pip install virtualenv;
