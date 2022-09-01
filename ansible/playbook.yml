@@ -4,8 +4,8 @@
   connection: local
 #  hosts: targets
   become: yes
-  vars_files:
-    - vars.yaml
+#  vars_files:
+#    - vars.yaml
   tasks:
     - name: check if virtualenv library already installed or not
       stat:
