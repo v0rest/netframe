@@ -10,6 +10,7 @@
         cd {{ requirements_path }}/requirements;
         for FILE in *.txt; do
         [ -f "$FILE" ] || break
+        pip3 install virtualenv;
         ENV=$(echo $FILE | cut -d '.' -f 1)
         virtualenv {{ env_path }}/$ENV
         source {{ env_path }}/$ENV/bin/activate
