@@ -30,9 +30,9 @@
     - name: Install Python 3
       apt:
         name:
-          - python3
-          - python3-devel
-          - python3-libs
+          - python3.8
+          - python3.8-dev
+          - python3.8-libs
           - python3-setuptools
           - gcc
           - gcc-c++
