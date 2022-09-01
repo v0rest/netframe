@@ -1,11 +1,14 @@
 name: Deploy Ansible
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 env:
   ANSIBLE_CONFIG: ansible/ansible.cfg
   ANSIBLE_INVENTORY_FILE: ansible/hosts
+
 jobs:
   job:
     name: "Deploy"
@@ -18,8 +21,9 @@ jobs:
       - name: Install Dependencies
         shell: bash
         run: |
-          pip3 install boto3 ansible
+          sudo apt-get install build-essential python3-dev libssl-dev libffi-dev
+          pip3 install ansible
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml -v
+          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml --extra-vars "requirements_path=$GITHUB_WORKSPACE env_path=/opt/python_venvs" -v
