@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies
         shell: bash
         run: |
-          pip3 install boto3 ansible
+          pip3 install ansible
 
       - name: Run Ansible Playbook
         run: |
