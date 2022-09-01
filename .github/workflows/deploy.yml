@@ -5,6 +5,7 @@ on:
 
 env:
   ANSIBLE_CONFIG: ansible/ansible.cfg
+  ANSIBLE_INVENTORY_FILE: ansible/hosts
 jobs:
   job:
     name: "Deploy"
@@ -21,4 +22,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i hosts ansible/playbook.yml -v
+          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml -v
