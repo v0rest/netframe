@@ -34,7 +34,6 @@
           - python3.8-dev
           - python3-setuptools
           - gcc
-          - gcc-c++
         state: present
 
     - name: Create Python3-virtual environment folder
