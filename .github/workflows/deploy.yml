@@ -1,0 +1,60 @@
+name: Deploy Ansible
+
+on:
+  workflow_dispatch:
+
+env:
+  ANSIBLE_INVENTORY_FILE: ansible/inventory.aws_ec2.yml
+  ANSIBLE_CONFIG: ansible/ansible.cfg
+
+
+
+jobs:
+  job:
+    name: "Deploy"
+    runs-on: ubuntu-20.04
+
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        if: github.event.inputs.destroy_infra == 'false'
+        shell: bash
+        run: |
+          pip3 install boto3 ansible 
+
+      - name: Ansible wait for connection
+        run: |
+          ansible all -m wait_for_connection -a "timeout=300" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+
+      - name: Validate Ansible Inventory
+        run: |
+          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
+
+      - name: Ansible AD-HOC copy files to EC2-instance
+        run: |
+          ansible aws_ec2 -m file -a "dest=${{ env.INSTANCE_DEPLOY_PATH }} mode=755 owner=ec2-user group=ec2-user state=directory" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m copy -a "src=$GITHUB_WORKSPACE/local_deployment/ dest=${{ env.INSTANCE_DEPLOY_PATH }} mode=755 owner=ec2-user group=ec2-user" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+
+      - name: Set - Grafana creds, Slack Webhook, Alert channel, External URL, Certs, Nginx creds
+        run: |
+          ansible aws_ec2 -m shell -a "sed -i 's|GRAFANA_ADMIN_PASSWORD=.*|GRAFANA_ADMIN_PASSWORD=${{ secrets.GRAFANA_ADMIN_PASSWORD }}|g' ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "sed -i 's|GRAFANA_ADMIN_USERNAME=.*|GRAFANA_ADMIN_USERNAME=${{ secrets.GRAFANA_ADMIN_USERNAME }}|g' ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "sed -i -e 's|SLACK_ALERT_HOOK|${{ secrets.SLACK_WEBHOOK_URL }}|' ${{ env.INSTANCE_DEPLOY_PATH }}${{ env.ALERTMANAGER_CONFIG }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "sed -i -e 's|SLACK_ALERT_CHANNEL|${{ secrets.SLACK_ALERT_CHANNEL }}|' ${{ env.INSTANCE_DEPLOY_PATH }}${{ env.ALERTMANAGER_CONFIG }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "sed -i -e 's|EXTERNAL_URL=.*|EXTERNAL_URL=${{ env.EXTERNAL_URL }}|g' ${{ env.INSTANCE_DEPLOY_PATH }}/.env" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "sed -i -e 's|EXTERNAL_URL|${{ env.EXTERNAL_URL }}|g' ${{ env.INSTANCE_DEPLOY_PATH }}${{ env.ALERTRULES_CONFIG }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "echo '${{secrets.DH_PARAM }}' > ${{ env.SSL_CERT_PATH }}/dhparam.pem" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "echo '${{ secrets.CERT_FILE }}' > ${{ env.SSL_CERT_PATH }}/monitoring.crt" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "echo '${{ secrets.KEY_FILE }}' > ${{ env.SSL_CERT_PATH }}/monitoring.key" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+          ansible aws_ec2 -m shell -a "python3 ${{ env.NGINX_CRED_PATH }}/gen-pass.py -u ${{ secrets.NGINX_USER }} -p ${{ secrets.NGINX_PASSWORD }}" -i ${{ env.ANSIBLE_INVENTORY_FILE }} -b -u ${{ env.INSTANCE_USER }}
+
+      - name: Validate Ansible Inventory
+        run: |
+          ansible-inventory --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} --list -vvvv
+
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook_deploy_docker.yml -v

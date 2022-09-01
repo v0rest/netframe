@@ -1,0 +1,49 @@
+---
+- name: "Install virtualenv"
+  hosts: localhost
+  connection: local
+  become: yes
+  vars_files:
+    - vars.yaml
+  tasks:
+    - name: check if virtualenv library already installed or not
+      stat:
+        path: /usr/bin/virtualenv
+      register: pip_virtualenv_installed
+
+    - name: Download Pip-Installer
+      get_url:
+        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        dest: /tmp/get-pip.py
+      when: pip_virtualenv_installed.stat.exists == False
+
+    - name: Install pip
+      shell: /usr/bin/python /tmp/get-pip.py
+      when: pip_virtualenv_installed.stat.exists == False
+
+    - name: Install virtualenv module
+      pip:
+        name: virtualenv
+      when: pip_virtualenv_installed.stat.exists == False
+
+    - name: Install Python 3.6
+      apt:
+        name:
+          - python36
+          - python36-devel
+          - python36-libs
+          - python3-setuptools
+          - gcc
+          - gcc-c++
+        state: present
+
+    - name: Create Python3-virtual environment folder
+      file:
+        name: /opt/python_venvs
+        state: directory
+
+    - name: Initiate virtualenv
+      pip:
+        virtualenv: /opt/python_venvs
+        virtualenv_python: python3.6
+        requirements: /opt/python_venvs/requirements.txt
