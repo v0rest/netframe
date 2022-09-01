@@ -21,7 +21,7 @@
       shell: /usr/bin/python3 /tmp/get-pip.py
 
     - name: Create venvs
-      shell: |
+      command: |
         cd /home/runner/work/netframe/netframe/requirements;
         for FILE in *.txt; do
         [ -f "$FILE" ] || break
