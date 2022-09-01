@@ -13,5 +13,5 @@
         ENV=$(echo $FILE | cut -d '.' -f 1)
         virtualenv {{ env_path }}/$ENV
         source {{ env_path }}/$ENV/bin/activate
-        pip install -r $FILE
+        pip3 install -r $FILE
         done
