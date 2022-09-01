@@ -21,4 +21,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook all ansible/playbook.yml -v
+          ansible-playbook -i hosts ansible/playbook.yml -v
