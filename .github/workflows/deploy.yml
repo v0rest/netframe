@@ -6,6 +6,7 @@ on:
 env:
   ANSIBLE_CONFIG: ansible/ansible.cfg
   ANSIBLE_INVENTORY_FILE: ansible/hosts
+
 jobs:
   job:
     name: "Deploy"
@@ -23,4 +24,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml --extra-vars "env_path=$GITHUB_WORKSPACE" -v
+          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml --extra-vars "requirements_path=$GITHUB_WORKSPACE env_path=/opt/python_venvs" -v
