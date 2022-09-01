@@ -27,7 +27,7 @@
         name: virtualenv
       when: pip_virtualenv_installed.stat.exists == False
 
-    - name: Install Python 3
+    - name: Install Python 3.8
       apt:
         name:
           - python3.8
@@ -44,5 +44,5 @@
     - name: Initiate virtualenv
       pip:
         virtualenv: /opt/python_venvs
-        virtualenv_python: python3.6
+        virtualenv_python: python3.8
         requirements: /opt/python_venvs/requirements.txt
