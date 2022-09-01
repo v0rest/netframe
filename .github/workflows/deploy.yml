@@ -18,8 +18,9 @@ jobs:
       - name: Install Dependencies
         shell: bash
         run: |
+          sudo apt-get install build-essential python3-dev libssl-dev libffi-dev
           pip3 install ansible
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml -v
+          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml --extra-vars "env_path=$GITHUB_WORKSPACE" -v
