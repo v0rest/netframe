@@ -11,17 +11,11 @@
           - libssl-dev
           - libffi-dev
         state: present
-
-    - name: Download Pip-Installer
-      get_url:
-        url: https://bootstrap.pypa.io/pip/3.6/get-pip.py
-        dest: /tmp/get-pip.py
-
-    - name: Install pip
-      shell: /usr/bin/python3 /tmp/get-pip.py
+    - name: Upgrade pip3
+      shell: python3 -m pip install pip --upgrade
 
     - name: Create venvs
-      command: |
+      shell: |
         cd /home/runner/work/netframe/netframe/requirements;
         for FILE in *.txt; do
         [ -f "$FILE" ] || break
