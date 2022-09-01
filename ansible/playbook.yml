@@ -37,7 +37,7 @@
         state: present
     - name: Create Python3-virtual environment folder
       shell: |
-        cd requirements;
+        cd $GITHUB_WORKSPACE/requirements; \
         for FILE in *.txt; do \
         [ -f "$FILE" ] || break \
         pip install virtualenv; \
