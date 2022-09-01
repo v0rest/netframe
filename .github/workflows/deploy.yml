@@ -1,0 +1,26 @@
+name: Deploy Ansible
+
+on:
+  workflow_dispatch:
+
+env:
+  ANSIBLE_INVENTORY_FILE: ansible/hosts
+  ANSIBLE_CONFIG: ansible/ansible.cfg
+jobs:
+  job:
+    name: "Deploy"
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        if: github.event.inputs.destroy_infra == 'false'
+        shell: bash
+        run: |
+          pip3 install boto3 ansible
+
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook --inventory ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/playbook.yml -v
