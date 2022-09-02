@@ -1,20 +1,19 @@
-name: Deploy Virtualenv
+name: Update Virtualenv
 
 on:
-  workflow_dispatch:
-
-env:
-  ANSIBLE_CONFIG: ansible/ansible.cfg
-  ANSIBLE_INVENTORY_FILE: ansible/hosts
-
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'requirements/**'
 jobs:
   job:
-    name: "Deploy"
+    name: "Update Virtualenv"
     runs-on: ubuntu-20.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
 
       - name: Install Dependencies
         shell: bash
@@ -24,4 +23,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/deploy_venv_playbook.yml --extra-vars "requirements_path=$GITHUB_WORKSPACE env_path=/opt/python_venvs" -v
+          ansible-playbook -i ${{ env.ANSIBLE_INVENTORY_FILE }} ansible/update_venv_playbook.yml --extra-vars "requirements_path=$GITHUB_WORKSPACE env_path=/opt/python_venvs" -v

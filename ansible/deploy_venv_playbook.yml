@@ -5,13 +5,19 @@
     - name: Upgrade pip3
       shell: python3 -m pip install pip --upgrade
 
+    - name: Download the last requirements file from public repo
+      get_url:
+        url: https://github.com/v0rest/netframe/blob/main/requirements/
+        dest: ~/requirements/
+
     - name: Create venvs
       shell: |
-        cd {{ requirements_path }}/requirements;
+        cd ~/requirements;
         for FILE in *.txt; do
         [ -f "$FILE" ] || break
         ENV=$(echo $FILE | cut -d '.' -f 1)
-        virtualenv {{ env_path }}/$ENV
+        pip3 install venv;
+        venv {{ env_path }}/$ENV
         source {{ env_path }}/$ENV/bin/activate
         pip3 install -r $FILE
         done

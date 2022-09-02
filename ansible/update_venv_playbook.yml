@@ -1,0 +1,19 @@
+---
+- name: "Update virtualenv"
+  hosts: local
+  tasks:
+
+    - name: Download the last requirements file from public repo
+      get_url:
+        url: https://github.com/v0rest/netframe/blob/main/requirements/1.txt
+        dest: ~/requirements/1.txt
+        force: yes
+      register: 1
+
+    - name: Update requirements
+      shell: |
+        source {{ env_path }}/1/bin/activate
+        pip3 install -r 1.txt
+      args:
+        chdir: ~/requirements/
+      when: 1.changed
