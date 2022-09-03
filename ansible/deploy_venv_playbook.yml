@@ -1,12 +1,14 @@
 ---
 - name: "Install virtualenv"
   hosts: local
+  vars_files:
+    - vars.yml
   tasks:
     - name: Upgrade pip3
       shell: | 
         python3 -m pip install pip --upgrade
-        echo $USER
-      register: user
+ #       echo $USER
+ #     register: user
 
     - name: Create a requirements directory if it does not exist
       file:
@@ -23,7 +25,7 @@
 
     - name: pull several files
       get_url:
-        url: "https://raw.githubusercontent.com/v0rest/netframe/main/requirements/{{ item }}"
+        url: "{{requirements_url}}/{{ item }}"
         dest: ~/requirements
       with_items:
         - 1.txt

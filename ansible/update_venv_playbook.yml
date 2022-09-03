@@ -5,7 +5,7 @@
 
     - name: Download the last requirements file from public repo
       get_url:
-        url: https://github.com/v0rest/netframe/blob/main/requirements/1.txt
+        url: "{{ requirements_url }}/1.txt"
         dest: ~/requirements/1.txt
         force: yes
       register: 1
