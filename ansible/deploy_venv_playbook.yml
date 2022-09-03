@@ -12,8 +12,8 @@
       file:
         path: "{{ item }}"
         state: directory
-        owner: v0rest
-        group: staff
+#        owner: v0rest
+#        group: staff
         mode: '0755'
         recurse: yes
       with_items:
@@ -23,7 +23,7 @@
 
     - name: pull several files
       get_url:
-        url: "https://github.com/v0rest/netframe/blob/main/requirements/{{ item }}"
+        url: "https://raw.githubusercontent.com/v0rest/netframe/main/requirements/{{ item }}"
         dest: ~/requirements
       with_items:
         - 1.txt
