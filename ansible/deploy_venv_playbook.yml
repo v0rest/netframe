@@ -21,7 +21,7 @@
       with_items:
         - ~/requirements
         - "{{ env_path }}"
-      become: yes
+#      become: yes
 
     - name: pull several files
       get_url:
