@@ -49,8 +49,8 @@
 #      loop:
 #        - 1.txt
 #        - 2.txt
-##        - 3.txt
-##      register: new
+#        - 3.txt
+#      register: new
 
 #    - debug:
 #        var: new.changed
