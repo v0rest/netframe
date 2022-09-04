@@ -1,14 +1,31 @@
 ---
 - name: "Update virtualenv"
   hosts: local
+  vars_files:
+    - vars.yml
   tasks:
 
-    - name: Download the last requirements file from public repo
+################################################
+    - name: Get stats of a file 1
+      stat:
+        path: "{{ requirements_path }}/1.txt"
+        get_checksum: yes
+        checksum_algorithm : md5
+      register: TARGET_RESULTS_1
+
+    - debug:
+        var: TARGET_RESULTS_1.stat.checksum
+
+    - name: Download the last requirements file from public repo 1
       get_url:
         url: "{{ requirements_url }}/1.txt"
-        dest: ~/requirements/1.txt
+        dest: ~/requirements
         force: yes
-      register: 1
+        checksum: "md5:{{ TARGET_RESULTS_1.stat.checksum }}"
+      register: new_1
+
+    - debug:
+        var: new_1.changed
 
     - name: Update requirements
       shell: |
@@ -16,4 +33,63 @@
         pip3 install -r 1.txt
       args:
         chdir: ~/requirements/
-      when: 1.changed
+      when: "'true' in 'new_1.changed'"
+####################################################
+    - name: Get stats of a file 2
+      stat:
+        path: "{{ requirements_path }}/2.txt"
+        get_checksum: yes
+        checksum_algorithm : md5
+      register: TARGET_RESULTS_2
+
+    - debug:
+        var: TARGET_RESULTS_2.stat.checksum
+
+    - name: Download the last requirements file from public repo
+      get_url:
+        url: "{{ requirements_url }}/2.txt"
+        dest: ~/requirements
+        force: yes
+        checksum: "md5:{{ TARGET_RESULTS_2.stat.checksum }}"
+      register: new_2
+
+    - debug:
+        var: new_2.changed
+
+    - name: Update requirements
+      shell: |
+        source {{ env_path }}/2/bin/activate
+        pip3 install -r 2.txt
+      args:
+        chdir: ~/requirements/
+      when: "'true' in 'new_2.changed'"
+
+###############################################
+    - name: Get stats of a file
+      stat:
+        path: "{{ requirements_path }}/3.txt"
+        get_checksum: yes
+        checksum_algorithm : md5
+      register: TARGET_RESULTS_3
+
+    - debug:
+        var: TARGET_RESULTS_3.stat.checksum
+
+    - name: Download the last requirements file from public repo
+      get_url:
+        url: "{{ requirements_url }}/3.txt"
+        dest: ~/requirements
+        force: yes
+        checksum: "md5:{{ TARGET_RESULTS_3.stat.checksum }}"
+      register: new_3
+
+    - debug:
+        var: new_3.changed
+
+    - name: Update requirements
+      shell: |
+        source {{ env_path }}/3/bin/activate
+        pip3 install -r 3.txt
+      args:
+        chdir: ~/requirements/
+      when: "'true' in 'new_3.changed'"

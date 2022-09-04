@@ -1,3 +1,6 @@
 ---
 env_path: /opt/python_venvs
 requirements_url: https://raw.githubusercontent.com/v0rest/netframe/main/requirements
+requirements_path: ~/requirements
+LOG: ~/requirements/scan_results.log
+#TARGET: ~/requirements
