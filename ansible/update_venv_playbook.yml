@@ -24,21 +24,21 @@
 #    - debug:
 #        var: TARGET_RESULTS
 
-    #    - name: 'write findings to log'
-    #      lineinfile:
-    #        line: "{{ item.stat.path }},{{ item.stat.checksum }}"
-    #        path: "{{ LOG }}"
-    #        create: yes
-    #      loop: '{{ TARGET_RESULTS.results }}'
+#    - name: 'write findings to log'
+#      lineinfile:
+#        line: "{{ item.stat.path }},{{ item.stat.checksum }}"
+#        path: "{{ LOG }}"
+#        create: yes
+#      loop: '{{ TARGET_RESULTS.results }}'
 
-    #    - name: Download the last requirements file from public repo
-    #      get_url:
-    #        url: "{{ requirements_url }}/{{ target_files }}"
-    #        dest: ~/requirements
-    #        force: yes
-    #        checksum: "md5:{{ item.stat.path }}|{{ item.stat.checksum }}"
-    #      loop: '{{ TARGET_RESULTS.results }}'
-    #      register: new
+#    - name: Download the last requirements file from public repo
+#      get_url:
+#        url: "{{ requirements_url }}/{{ target_files }}"
+#        dest: ~/requirements
+#        force: yes
+#        checksum: "md5:{{ item.stat.path }}|{{ item.stat.checksum }}"
+#      loop: '{{ TARGET_RESULTS.results }}'
+#      register: new
 
 #    - name: Download the last requirements file from public repo
 #      get_url:
@@ -54,7 +54,6 @@
 
 #    - debug:
 #        var: new.changed
-
 
 ################################################
     - name: Get stats of a file 1
