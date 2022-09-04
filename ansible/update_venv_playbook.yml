@@ -4,6 +4,57 @@
   vars_files:
     - vars.yml
   tasks:
+#    - name: discover target files
+#      find:
+#        paths: "{{ TARGET }}"
+#        recurse: yes
+#        file_type: file
+#      register: TARGET_FILES
+#
+#    - debug:
+#        var: TARGET_FILES
+#
+#    - name: Get stats of a file
+#      stat:
+#        path: "{{ item.path }}"
+#        get_checksum: yes
+#      loop: "{{ TARGET_FILES.files }}"
+#      register: TARGET_RESULTS
+#
+#    - debug:
+#        var: TARGET_RESULTS
+
+    #    - name: 'write findings to log'
+    #      lineinfile:
+    #        line: "{{ item.stat.path }},{{ item.stat.checksum }}"
+    #        path: "{{ LOG }}"
+    #        create: yes
+    #      loop: '{{ TARGET_RESULTS.results }}'
+
+    #    - name: Download the last requirements file from public repo
+    #      get_url:
+    #        url: "{{ requirements_url }}/{{ target_files }}"
+    #        dest: ~/requirements
+    #        force: yes
+    #        checksum: "md5:{{ item.stat.path }}|{{ item.stat.checksum }}"
+    #      loop: '{{ TARGET_RESULTS.results }}'
+    #      register: new
+
+#    - name: Download the last requirements file from public repo
+#      get_url:
+#        url: "{{ requirements_url }}/{{ item }}"
+#        dest: ~/requirements
+#        force: yes
+#        checksum: "md5:{{ item }}"
+#      loop:
+#        - 1.txt
+#        - 2.txt
+##        - 3.txt
+##      register: new
+
+#    - debug:
+#        var: new.changed
+
 
 ################################################
     - name: Get stats of a file 1
